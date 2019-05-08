@@ -526,22 +526,39 @@ var scp_prep = function() {
 
   // Auto fetch queue counts
   $(function() {
-    var fired = false;
-    $('#customQ_nav li.item').hover(function() {
-      if (fired) return;
-      fired = true;
+    var refreshing = false;
+    var refreshQueueCounts = function() {
+      // block so only one request active at a time
+      if (refreshing) return;
+      refreshing = true;
+      // make the ajax request for counts
       $.ajax({
         url: 'ajax.php/queue/counts',
         dataType: 'json',
         success: function(json) {
+          // update the count values
           $('li span.queue-count').each(function(i, e) {
             var $e = $(e);
             $e.text(json['q' + $e.data('queueId')]);
-            $(e).parents().find('#queue-count-bucket').show();
+            if (!$e.hasClass('hidden'))
+              $e.parents('.queue-count-bucket').show();
           });
+          // refresh the overflowmenu widget (because item widths may have changed)
+          var menuWidget = $('#customQ_nav').overflowmenu('instance');
+          if (menuWidget) {
+            menuWidget.refresh();
+          }
+        },
+        complete: function() {
+          // release the lock
+          refreshing = false;
         }
       });
-    });
+    };
+
+    // load queue counts on page load
+    // this function could also be called by other events that should trigger refreshing the counts
+    refreshQueueCounts();
   });
 };
 
