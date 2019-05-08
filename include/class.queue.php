@@ -112,6 +112,11 @@ class CustomQueue extends VerySimpleModel {
         return $this->path ?: $this->buildPath();
     }
 
+    function shouldHideCountInNav() {
+        // TODO: need this to be an option in database
+        return ($this->getId() === 8);
+    }
+
     function criteriaRequired() {
         return true;
     }
