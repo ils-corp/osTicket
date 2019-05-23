@@ -1585,7 +1585,7 @@ abstract class QueueColumnAnnotation {
      * Estimate the width of the rendered annotation in pixels
      */
     function getWidth($row) {
-        return $this->isVisible($row) ? 25 : 0;
+        return $this->isVisible($row) ? 30 : 0;
     }
 
     function isVisible($row) {
@@ -2289,6 +2289,8 @@ extends VerySimpleModel {
         $offset = 0;
         foreach ($this->getAnnotations() as $a)
             $offset += $a->getWidth($row);
+        if ($offset)
+            $offset += 15;
 
         $width = $this->width - $offset;
         $class = array();
