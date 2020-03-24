@@ -175,7 +175,7 @@ extends VerySimpleModel {
     function getRules() {
         $rules = [];
         foreach ($this->rules as $r)
-            $rules[] = array('w'=>$r->what,'h'=>$r->how,'v'=>$r->val);
+            $rules[] = array('w'=>$r->what,'h'=>$r->how,'v'=>$r->val, 'a'=>$r->isactive);
 
         return $rules;
     }
@@ -250,6 +250,7 @@ extends VerySimpleModel {
             return false;
 
         foreach ($this->getRules() as $rule) {
+            if (array_key_exists('a', $rule) && !$rule['a']) continue;
             if (!isset($how[$rule['h']])) continue;
             list($func, $pos, $neg) = $how[$rule['h']];
 
